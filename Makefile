@@ -1,3 +1,5 @@
+# test of opendap with fortran netcdf code
+
 default:	opendap_read
 
 opendap_read:	opendap_read.f90
