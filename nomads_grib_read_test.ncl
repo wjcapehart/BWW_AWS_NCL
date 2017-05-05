@@ -1,6 +1,6 @@
 begin
 
-  testfile = "http://52.27.3.199:8080/thredds/dodsC/processed/170428/smt01_17042800.grb"
+  testfile = "https://nomads.ncdc.noaa.gov/thredds/dodsC/gfs-004/201705/20170504/gfs_4_20170504_0600_384.grb2"
 
   print("file to test: "+testfile)
 
@@ -12,7 +12,7 @@ begin
 
   printVarSummary(isobaric_height)
 
-  z500 = f->Geopotential_height_isobaric(:,{500},:,:)
+  z500 = f->Geopotential_height(:,{50000},:,:)
 
   printVarSummary(z500)
 
