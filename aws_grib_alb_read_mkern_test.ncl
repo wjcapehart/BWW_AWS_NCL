@@ -7,10 +7,10 @@ begin
 
   url_root  = "http://52.27.3.199:8080/thredds/dodsC/processed"
 
-  start_date_string = "2017-04-28"
-  end_date_string   = "2017-05-01"
+  start_date_string = "2016-01-25"
+  end_date_string   = "2017-04-26"
 
-  localle = "smt"
+  localle = "alb"
 
   title_string      = "bww_" + localle + "_500mb_"
 
@@ -58,7 +58,7 @@ begin
 
   ; Crack open a temporary wrf file and grab our study area.  (This will be bigger than our acutal area.)
 
-  initital_setup_url = "http://52.27.3.199:8080/thredds/dodsC/processed/170428/smt01_17042800.grb"
+  initital_setup_url = "http://52.27.3.199:8080/thredds/dodsC/processed/170428/alb01_17042800.grb"
 
   f = addfile(initital_setup_url, "r")
 
