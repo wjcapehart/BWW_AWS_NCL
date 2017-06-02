@@ -1,6 +1,6 @@
 load "$NCARG_ROOT/lib/ncarg/nclscripts/wrf/WRFUserARW.ncl"
 
-l;;;  suny albany customized
+;;;  suny albany customized
 
 begin
 
@@ -69,7 +69,7 @@ begin
 
   ; Crack open a temporary wrf file and grab our study area.  (This will be bigger than our acutal area.)
 
-  initital_setup_url = "http://52.27.3.199:8080/thredds/dodsC/processed/170428/alb01_17042800.grb"
+  initital_setup_url = "http://52.27.3.199:8080/thredds/dodsC/runs/alb10/170602/alb10_17060200.nc4"
 
   f = addfile(initital_setup_url, "r")
 
@@ -252,7 +252,7 @@ begin
                      member                      + \
                      "_"                         + \
                      day_dir                     + \
-                     "00.grb"
+                     "00.nc4"
 
          print(" - " + member+ "_" + day_dir )
          print(" "   + urlfile1)
@@ -298,12 +298,12 @@ begin
 
                wrf_fx_decompose = cd_calendar(time(t), -5)
 
-               local_time = sprinti("%0.4i-", wrf_fx_decompose(0,0)) + \
+               local_time := sprinti("%0.4i-", wrf_fx_decompose(0,0)) + \
                             sprinti("%0.2i-", wrf_fx_decompose(0,1)) + \
                             sprinti("%0.2i_", wrf_fx_decompose(0,2)) + \
                             sprinti("%0.2i:", wrf_fx_decompose(0,3)) + \
                             sprinti("%0.2i:", wrf_fx_decompose(0,4)) + \
-                            sprinti("%0.2i",  wrf_fx_decompose(0,5)) + \
+                            sprinti("%0.2i",  wrf_fx_decompose(0,5))
 
                urlfile1 =  url_root                    + \
                            "/"                         + \
@@ -318,12 +318,12 @@ begin
                if (isfilepresent(urlfile1)) then
 
                   do hh = 0, nt_wrf, 1
-                     local_time = sprinti("%0.4i-", wrf_fx_decompose(hh,0)) + \
+                     local_time := sprinti("%0.4i-", wrf_fx_decompose(hh,0)) + \
                                   sprinti("%0.2i-", wrf_fx_decompose(hh,1)) + \
                                   sprinti("%0.2i_", wrf_fx_decompose(hh,2)) + \
                                   sprinti("%0.2i:", wrf_fx_decompose(hh,3)) + \
                                   sprinti("%0.2i:", wrf_fx_decompose(hh,4)) + \
-                                  sprinti("%0.2i",  wrf_fx_decompose(hh,5)) + \
+                                  sprinti("%0.2i",  wrf_fx_decompose(hh,5))
 
                      urlfile1 =  url_root                    + \
                                   "/"                         + \
