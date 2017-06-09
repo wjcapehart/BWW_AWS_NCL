@@ -9,7 +9,7 @@ begin
   ;;; fix me!!!
   url_root  = "http://52.27.3.199:8080/thredds/dodsC/runs/"
 
-  start_date_string = "2016-01-25"
+  start_date_string = "2016-02-01"
   end_date_string   = "2017-04-26"
 
   localle = "alb"
@@ -196,7 +196,8 @@ begin
       delete(z_500_arch@grid_mapping)
       print(getFillValue(z_500_arch))
       z_500_arch@_FillValue           = getFillValue(new((/10/), float))
-      printVarSummary(z_500_arch)
+      z_500_arch@coordinates      = "time isobaric_height latitdue longitude"
+   printVarSummary(z_500_arch)
 
 
    delete(latitude@missing_value)
@@ -244,8 +245,7 @@ begin
                    sprinti("%0.2i",      date_decompose(0,2))
 
          urlfile1 =  url_root                    + \
-                     "/"                         + \
-                     member_dir_name(university) + \
+                     member                      + \
                      "/"                         + \
                      day_dir                     + \
                      "/"                         + \
@@ -260,6 +260,11 @@ begin
          if (isfilepresent(urlfile1)) then
 
             f = addfile(urlfile1, "r")
+            print(f)
+            print("reading "+member + \
+                           "_"                         + \
+                          day_dir                     + \
+                         "00.nc4")
 
             z_500_arch(e, t, :, 0, :, :) = (/ f->Geopotential_height_isobaric(:,{500},j_min:j_max, i_min:i_max) /)
 
@@ -268,8 +273,7 @@ begin
             ; begin wrf (all data in one file) search : albEE_YYMMDDHH.nc
 
             urlfile1 =  url_root                    + \
-                        "/"                         + \
-                        member_dir_name(university) + \
+                        member + \
                         "/"                         + \
                         day_dir                     + \
                         "/"                         + \
@@ -281,9 +285,11 @@ begin
             if (isfilepresent(urlfile1)) then
 
                f = addfile(urlfile1, "r")
-
+               print("      reading height")
                z4d = wrf_user_getvar(f,    "z", -1)
+               print("      reading pressure")
                p4d = wrf_user_getvar(f, "pres", -1)
+               print("      interpolating to 500hPa")
 
                z_500_arch(e, t, :, 0, :, :) = (/ wrf_user_intrp3d(z3d(:,:,j_min:j_max, i_min:i_max), \
                                                                               p3d(:,:,j_min:j_max, i_min:i_max), \
@@ -293,21 +299,20 @@ begin
 
                ; traditional wrf single hour files, wrfout_d01_yyyy-mm-dd_00:00:00
 
-               local_time = time(t) + forecast_time/24.
-                  local_time@units = time_units
+               ;local_time = time(t) + forecast_time(h)/24.
+            ;      local_time@units = time_units
 
                wrf_fx_decompose = cd_calendar(time(t), -5)
 
                local_time := sprinti("%0.4i-", wrf_fx_decompose(0,0)) + \
-                            sprinti("%0.2i-", wrf_fx_decompose(0,1)) + \
-                            sprinti("%0.2i_", wrf_fx_decompose(0,2)) + \
-                            sprinti("%0.2i:", wrf_fx_decompose(0,3)) + \
-                            sprinti("%0.2i:", wrf_fx_decompose(0,4)) + \
-                            sprinti("%0.2i",  wrf_fx_decompose(0,5))
+                             sprinti("%0.2i-", wrf_fx_decompose(0,1)) + \
+                             sprinti("%0.2i_", wrf_fx_decompose(0,2)) + \
+                             sprinti("%0.2i:", wrf_fx_decompose(0,3)) + \
+                             sprinti("%0.2i:", wrf_fx_decompose(0,4)) + \
+                             sprinti("%0.2i",  wrf_fx_decompose(0,5))
 
                urlfile1 =  url_root                    + \
-                           "/"                         + \
-                           member_dir_name(university) + \
+                           member                       + \
                            "/"                         + \
                            day_dir                     + \
                            "/"                         + \
@@ -319,15 +324,14 @@ begin
 
                   do hh = 0, nt_wrf, 1
                      local_time := sprinti("%0.4i-", wrf_fx_decompose(hh,0)) + \
-                                  sprinti("%0.2i-", wrf_fx_decompose(hh,1)) + \
-                                  sprinti("%0.2i_", wrf_fx_decompose(hh,2)) + \
-                                  sprinti("%0.2i:", wrf_fx_decompose(hh,3)) + \
-                                  sprinti("%0.2i:", wrf_fx_decompose(hh,4)) + \
-                                  sprinti("%0.2i",  wrf_fx_decompose(hh,5))
+                                   sprinti("%0.2i-", wrf_fx_decompose(hh,1)) + \
+                                   sprinti("%0.2i_", wrf_fx_decompose(hh,2)) + \
+                                   sprinti("%0.2i:", wrf_fx_decompose(hh,3)) + \
+                                   sprinti("%0.2i:", wrf_fx_decompose(hh,4)) + \
+                                   sprinti("%0.2i",  wrf_fx_decompose(hh,5))
 
                      urlfile1 =  url_root                    + \
-                                  "/"                         + \
-                                  member_dir_name(university) + \
+                                  member                      + \
                                   "/"                         + \
                                   day_dir                     + \
                                   "/"                         + \
@@ -384,11 +388,11 @@ begin
    fout@map_projection             = "lambert_conformal_conic"
    fout@dx                         = 20000.0
    fout@dy                         = 20000.0
-   fout@dt                         = 90.0
-   fout@central_latitude           = 39.5
-   fout@central_lontitude          = -98.5
-   fout@reference_latitude_1       = 39.5
-   fout@reference_latitude_2       = 39.5
+   fout@dt                         =    90.0
+   fout@central_latitude           =    39.5
+   fout@central_lontitude          =   -98.5
+   fout@reference_latitude_1       =    39.5
+   fout@reference_latitude_2       =    39.5
    fout@subset_southwest_latitude  = latitude(0,0)
    fout@subset_southwest_longitude = longitude(0,0)
    fout@subset_southeast_latitude  = latitude(0,nx_wrf-1)
